@@ -37,6 +37,10 @@ PUB_TYPES = {
     "patent": 8,
 }
 
+LINKS_HEADER = f'links:'
+ARXIV_LINK = f'- name: arXiv\n  url: '
+ANTHOLOGY_LINK = f'- name: Anthology\n  url: '
+
 # Initialise logger.
 logging.basicConfig(format="%(asctime)s %(levelname)s: %(message)s", level=logging.WARNING, datefmt="%I:%M:%S%p")
 log = logging.getLogger(__name__)
@@ -149,15 +153,6 @@ def parse_bibtex_entry(entry, pub_dir="publication", featured=False, overwrite=F
     if not dry_run:
         Path(bundle_path).mkdir(parents=True, exist_ok=True)
 
-    # Save citation file.
-    log.info(f"Saving citation to {cite_path}")
-    db = BibDatabase()
-    db.entries = [entry]
-    writer = BibTexWriter()
-    if not dry_run:
-        with open(cite_path, "w", encoding="utf-8") as f:
-            f.write(writer.write(db))
-
     # Prepare YAML front matter for Markdown file.
     frontmatter = ["---"]
     frontmatter.append(f'title: "{clean_bibtex_str(entry["title"])}"')
@@ -209,17 +204,44 @@ def parse_bibtex_entry(entry, pub_dir="publication", featured=False, overwrite=F
         frontmatter.append(f'publication: "*{clean_bibtex_str(entry["publisher"])}*"')
     else:
         frontmatter.append('publication: ""')
+    if "venue" in entry: 
+        frontmatter.append(f'publication_short: "{clean_bibtex_str(entry["venue"])}"')
+        del entry["venue"]
 
     if "keywords" in entry:
         frontmatter.append(f'tags: [{clean_bibtex_tags(entry["keywords"], normalize)}]')
-
-    if "url" in entry:
-        frontmatter.append(f'url_pdf: "{clean_bibtex_str(entry["url"])}"')
-
+    if "arxiv" or "anthology" in entry:
+        frontmatter.append(LINKS_HEADER)
+    if "anthology" in entry:
+        frontmatter.append(ANTHOLOGY_LINK + clean_bibtex_str(entry["anthology"]))
+        del entry["anthology"]
+    if "arxiv" in entry:
+        frontmatter.append(ARXIV_LINK + clean_bibtex_str(entry["arxiv"]))
     if "doi" in entry:
         frontmatter.append(f'doi: "{entry["doi"]}"')
 
+    if "recent" in entry:
+        frontmatter.append(f'recent: {entry["recent"]}')
+        del entry['recent']
+
+    frontmatter.append(f'url_pdf: papers/'+entry['ID']+'.pdf') 
+    if 'code' in entry:
+        frontmatter.append(f'url_code: '+entry['code'])  
+        del entry['code']
+
     frontmatter.append("---\n\n")
+
+    # Save citation file.
+    log.info(f"Saving citation to {cite_path}")
+    db = BibDatabase()
+    db.entries = [entry]
+    writer = BibTexWriter()
+    writer.display_order = ["title", "author", "booktitle", "month", "year", "address", "publisher",\
+                         "pages","volume", "url", "arxiv", "abstract"]
+    if not dry_run:
+        with open(cite_path, "w", encoding="utf-8") as f:
+            f.write(writer.write(db))
+
 
     # Save Markdown file.
     try:
@@ -287,7 +309,7 @@ def clean_bibtex_tags(s, normalize=False):
     tags = clean_bibtex_str(s).split(",")
     tags = [f'"{tag.strip()}"' for tag in tags]
     if normalize:
-        tags = [tag.lower().capitalize() for tag in tags]
+        tags = [tag.capitalize() for tag in tags]
     tags_str = ", ".join(tags)
     return tags_str
 
