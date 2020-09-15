@@ -6,10 +6,24 @@
 
 An admin tool for [Academic](https://sourcethemes.com/academic/).
 
-Features
+**Features**
 
 * Import publications from BibTeX
-* Import third-party assets to generate an entirely offline site
+* Hugo command pass-through
+
+**Community**
+
+- 💬 [Chat with the **Academic community**](https://discord.gg/z8wNYzb) or [**Hugo community**](https://discourse.gohugo.io)
+- 🐦 Twitter: [@source_themes](https://twitter.com/source_themes) [@GeorgeCushen](https://twitter.com/GeorgeCushen) [#MadeWithAcademic](https://twitter.com/search?q=%23MadeWithAcademic&src=typd)
+
+**Support**
+
+Support development of Academic:
+
+  - ❤️ [Become a **backer** and **unlock rewards**](https://sourcethemes.com/academic/plans/)
+  - ☕️ [**Donate a coffee**](https://paypal.me/cushen)
+  - 🖼️ [Decorate your laptop or journal with an Academic **sticker**](https://www.redbubble.com/people/neutreno/works/34387919-academic)
+  - :woman_technologist: [**Contribute**](#contribute)
 
 ## Prerequisites
 
@@ -48,30 +62,22 @@ Optional arguments:
 
 After importing publications, [a full text PDF and image can be associated with each item and further details added via extra parameters](https://sourcethemes.com/academic/docs/managing-content/#manually).
 
-**Import third-party JS and CSS assets for building an offline website:**
-
-    academic import --assets
-
-*Importing assets requires Academic v3+.*
-
 **Run a Hugo command (pass-through):**
 
     academic server
 
 ## Contribute
 
-For local development, clone this repository and install the tool using the following command:
+For local development, clone this repository and use Pipenv to install the tool using the following commands:
 
-    pip3 install -e .
+    pip3 install pipenv
+    pipenv install -e .
 
-## Support
+Preparing a contribution:
 
-Support development of Academic:
-
-  - [Donate a coffee](https://paypal.me/cushen)
-  - [Become a backer on Patreon](https://www.patreon.com/cushen)
-  - [Decorate your laptop or journal with an Academic sticker](https://www.redbubble.com/people/neutreno/works/34387919-academic)
-  - [Wear the T-shirt](https://academic.threadless.com/)
+- Lint: `make lint`
+- Format: `make format`
+- Test: `make test`
 
 ## License
 

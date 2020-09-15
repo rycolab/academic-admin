@@ -1,11 +1,11 @@
-from pathlib import Path
-from urllib.parse import urlparse
-import tempfile
 import logging
 import os
+import tempfile
+from pathlib import Path
+from urllib.parse import urlparse
+
 import toml
 from requests import get
-
 
 JS_FILENAME = "static/js/vendor/main.min.js"
 CSS_FILENAME = "static/css/vendor/main.min.css"
