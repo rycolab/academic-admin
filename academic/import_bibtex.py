@@ -136,6 +136,10 @@ def parse_bibtex_entry(entry, pub_dir="publication", featured=False, overwrite=F
         del entry["anthology"]
     if "arxiv" in entry:
         frontmatter.append(ARXIV_LINK + clean_bibtex_str(entry["arxiv"]))
+    if "slides" in entry:
+        frontmatter.append(f'url_slides: '+entry['slides'])
+    if "video" in entry:
+        frontmatter.append(f'url_video: '+entry['video'])
     if "doi" in entry:
         frontmatter.append(f'doi: "{entry["doi"]}"')
 
